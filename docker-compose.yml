@@ -1,0 +1,39 @@
+version: '3.8'
+services:
+  # 1. FastAPI Backend Service
+  api:
+    build: 
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: gmm_api
+    # start API server inside the container
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    volumes:
+      # Mounts local 'api' code into the container for live reloading/development
+      - ./api:/app
+    ports:
+      - "8000:8000"
+    # Ensures the database starts before the API tries to connect
+    depends_on:
+      - db
+    environment:
+      # CRITICAL: This is how Python code will know how to reach the DB container
+      - DATABASE_URL=postgresql://grc_user:grc_password@db:5432/grc_db
+
+  # 2. PostgreSQL Database Service
+  db:
+    image: postgres:14-alpine
+    container_name: gmm_db
+    environment:
+      # Database connection credentials - MUST match the DATABASE_URL above
+      - POSTGRES_USER=grc_user
+      - POSTGRES_PASSWORD=grc_password
+      - POSTGRES_DB=grc_db
+    ports:
+      - "5432:5432" # Maps the container DB port to  local machine
+    volumes:
+      # Ensures data persists even if the container stops
+      - postgres_data:/var/lib/postgresql/data/
+
+volumes:
+  postgres_data:
