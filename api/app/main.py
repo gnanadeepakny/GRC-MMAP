@@ -1,11 +1,13 @@
 from fastapi import FastAPI
-from .core import models, database # NEW IMPORTS
+from .core import models, database 
+from .routers import findings
 
-# Create all database tables defined in models.py (if they don't exist)
-models.Base.metadata.create_all(bind=database.engine) # NEW LINE
+models.Base.metadata.create_all(bind=database.engine) 
 
-# Initialize the FastAPI application
 app = FastAPI(title="Project GRC-MMAP API")
+
+# NEW LINE: Include the new router
+app.include_router(findings.router) 
 
 @app.get("/", tags=["Status"])
 def read_root():

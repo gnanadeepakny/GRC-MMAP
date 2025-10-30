@@ -1,0 +1,4 @@
+Raw_IP_Address,Raw_Vulnerability_Title,Vendor_Severity_Code
+192.168.1.10,Outdated SSH Protocol Version,CRITICAL
+10.0.0.5,Missing Security Patch KB456,HIGH
+172.16.0.2,Open Information Port,INFO
