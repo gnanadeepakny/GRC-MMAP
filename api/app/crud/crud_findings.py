@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from ..core import models, schemas
-from ..core.schemas import FindingCreate
+from ..core.schemas import FindingCreate, RiskCreate
 from typing import List
 
 
@@ -41,3 +41,18 @@ def create_finding(db: Session, finding: FindingCreate, asset_id: int):
     db.commit()
     db.refresh(db_finding)
     return db_finding
+
+def create_risk(db: Session, risk: RiskCreate, finding_id: int):
+    """Creates a new risk assessment entry linked to a finding."""
+    db_risk = models.Risk(
+        finding_id=finding_id,
+        inherent_score=risk.inherent_score,
+        risk_rating=risk.risk_rating,
+        cia_confidentiality=risk.cia_confidentiality,
+        cia_integrity=risk.cia_integrity,
+        cia_availability=risk.cia_availability,
+    )
+    db.add(db_risk)
+    db.commit()
+    db.refresh(db_risk)
+    return db_risk

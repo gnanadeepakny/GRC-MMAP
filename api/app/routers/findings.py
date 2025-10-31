@@ -5,6 +5,7 @@ from io import StringIO
 from ..core.database import get_db
 from ..data_ingestion.normalization import normalize_finding
 from ..crud import crud_findings 
+from ..risk_engine.risk_calc import calculate_risk
 from ..core.schemas import FindingCreate
 
 router = APIRouter(
@@ -33,7 +34,7 @@ async def upload_findings_csv(
     for index, row in df.iterrows():
         raw_data_dict = row.to_dict()
         
-        # 1. Normalize (from Day 3)
+        # 1. Normalize
         normalized_data = normalize_finding(raw_data_dict, source_name)
         
         # 2. CRUD: Create Asset (or get existing one)
@@ -42,11 +43,18 @@ async def upload_findings_csv(
         # 3. CRUD: Create Finding (linked to Asset)
         finding = crud_findings.create_finding(db, normalized_data, asset_id=asset.id)
         
+        # --- 4. RISK ENGINE CALCULATION (NEW CRITICAL STEP) ---
+        risk_data: RiskCreate = calculate_risk(normalized_data)
+        
+        # 5. CRUD: Persist Risk
+        crud_findings.create_risk(db, risk_data, finding_id=finding.id)
+        
         saved_findings.append(finding)
 
     return {
-        "status": "Success! Ingestion and Persistence Complete.",
+        "status": "Success! Ingestion, Persistence, and Risk Assessment Complete.",
         "source": source_name,
         "count": len(saved_findings),
-        "preview_id": saved_findings[0].id if saved_findings else None
+        "preview_finding_id": saved_findings[0].id if saved_findings else None,
+        "next_step": "Risk data is now available in the 'risks' table."
     }
