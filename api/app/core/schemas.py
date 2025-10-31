@@ -26,3 +26,19 @@ class Finding(FindingCreate):
 
     class Config:
         orm_mode = True
+
+class RiskCreate(BaseModel):
+    # Data to create a risk entry (mostly from the engine)
+    inherent_score: float
+    risk_rating: str
+    cia_confidentiality: float
+    cia_integrity: float
+    cia_availability: float
+
+class Risk(RiskCreate):
+    id: int
+    finding_id: int
+    residual_score: Optional[float] = None
+    
+    class Config:
+        orm_mode = True

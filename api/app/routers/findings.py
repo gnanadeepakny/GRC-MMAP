@@ -4,7 +4,8 @@ import pandas as pd
 from io import StringIO
 from ..core.database import get_db
 from ..data_ingestion.normalization import normalize_finding
-
+from ..crud import crud_findings 
+from ..core.schemas import FindingCreate
 
 router = APIRouter(
     prefix="/findings",
@@ -26,23 +27,26 @@ async def upload_findings_csv(
     # 2. Use Pandas to read the CSV content
     df = pd.read_csv(StringIO(content.decode('utf-8')))
     
-    normalized_findings = []
+    saved_findings: List[schemas.Finding] = [] 
     
-    # 3. Process and Normalize each row
+    # 3. Process, Normalize, and PERSIST each row (MAJOR CHANGE)
     for index, row in df.iterrows():
-        
         raw_data_dict = row.to_dict()
         
-        
+        # 1. Normalize (from Day 3)
         normalized_data = normalize_finding(raw_data_dict, source_name)
         
-        normalized_findings.append(normalized_data)
+        # 2. CRUD: Create Asset (or get existing one)
+        asset = crud_findings.create_asset_if_not_exists(db, normalized_data)
         
+        # 3. CRUD: Create Finding (linked to Asset)
+        finding = crud_findings.create_finding(db, normalized_data, asset_id=asset.id)
         
+        saved_findings.append(finding)
 
     return {
-        "status": "Normalization complete (Persistence TBD)",
+        "status": "Success! Ingestion and Persistence Complete.",
         "source": source_name,
-        "count": len(normalized_findings),
-        "preview": normalized_findings[0].dict() if normalized_findings else None
+        "count": len(saved_findings),
+        "preview_id": saved_findings[0].id if saved_findings else None
     }

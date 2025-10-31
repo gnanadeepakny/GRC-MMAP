@@ -16,6 +16,25 @@ class Asset(Base):
     
     findings = relationship("Finding", back_populates="asset")
 
+class Risk(Base):
+    __tablename__ = "risks"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    finding_id = Column(Integer, ForeignKey("findings.id"), unique=True)
+    
+    
+    inherent_score = Column(Float)
+    residual_score = Column(Float, default=None)
+    risk_rating = Column(String) # Low/Med/High/Critical
+    
+    
+    cia_confidentiality = Column(Float)
+    cia_integrity = Column(Float)
+    cia_availability = Column(Float)
+    
+    # Relationship back to Finding
+    finding = relationship("Finding", back_populates="risk", uselist=False)
+
 # Finding Model
 class Finding(Base):
     __tablename__ = "findings"
@@ -34,5 +53,5 @@ class Finding(Base):
     
     
     asset = relationship("Asset", back_populates="findings")
-    
+    risk = relationship("Risk", back_populates="finding", uselist=False)
     
