@@ -2,11 +2,14 @@ from fastapi import APIRouter, UploadFile, File, Depends
 from sqlalchemy.orm import Session
 import pandas as pd
 from io import StringIO
+from typing import List
+from ..core import schemas
 from ..core.database import get_db
 from ..data_ingestion.normalization import normalize_finding
 from ..crud import crud_findings 
 from ..risk_engine.risk_calc import calculate_risk
-from ..core.schemas import FindingCreate
+from ..core.schemas import FindingCreate, RiskCreate
+from ..crud import crud_compliance
 
 router = APIRouter(
     prefix="/findings",
@@ -49,12 +52,38 @@ async def upload_findings_csv(
         # 5. CRUD: Persist Risk
         crud_findings.create_risk(db, risk_data, finding_id=finding.id)
         
-        saved_findings.append(finding)
+        # --- 6. COMPLIANCE MAPPING (NEW CRITICAL STEP) ---
+        mapped_controls = crud_compliance.map_finding_to_controls(
+            db, finding_id=finding.id, finding_title=finding.normalized_title
+        )
 
-    return {
-        "status": "Success! Ingestion, Persistence, and Risk Assessment Complete.",
-        "source": source_name,
-        "count": len(saved_findings),
-        "preview_finding_id": saved_findings[0].id if saved_findings else None,
-        "next_step": "Risk data is now available in the 'risks' table."
-    }
+        # Initialize the preview variables outside the loop
+        final_mapped_controls_preview = [] # Declare the final output list
+
+        # 3. Process, Normalize, and PERSIST each row (MAJOR CHANGE)
+        for index, row in df.iterrows():
+            # ... (all processing, normalization, CRUD, and risk logic remains) ...
+        
+            # --- 6. COMPLIANCE MAPPING (NEW CRITICAL STEP) ---
+            mapped_controls = crud_compliance.map_finding_to_controls(
+                db, finding_id=finding.id, finding_title=finding.normalized_title
+            )
+
+            # CRITICAL: Store the mapped controls for the finding we want to preview
+            if index == 0: 
+                # We explicitly store the results of the *first* finding for preview
+                final_mapped_controls_preview = [
+                    {"control_id": c.id, "control_name": c.control_name} 
+                    for c in mapped_controls
+                ]
+        
+            saved_findings.append(finding) # This line must be inside the loop
+
+        return {
+            "status": "Success! Full GRC Pipeline Complete (Risk & Mapping).",
+            "source": source_name,
+            "count": len(saved_findings),
+            "preview_finding_id": saved_findings[0].id if saved_findings else None,
+            # Use the outside variable:
+            "mapped_controls_preview": final_mapped_controls_preview 
+        }

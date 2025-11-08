@@ -42,3 +42,22 @@ class Risk(RiskCreate):
     
     class Config:
         orm_mode = True
+
+class ControlBase(BaseModel):
+    control_name: str
+    cia_domain: str
+
+class Control(ControlBase):
+    id: int
+    class Config:
+        orm_mode = True
+
+# --- Framework Schemas (NEW) ---
+class FrameworkBase(BaseModel):
+    name: str
+    version: str
+
+class Framework(FrameworkBase):
+    id: int
+    class Config:
+        orm_mode = True
