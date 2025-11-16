@@ -19,6 +19,8 @@ services:
     environment:
       # CRITICAL: This is how Python code will know how to reach the DB container
       - DATABASE_URL=postgresql://grc_user:grc_password@db:5432/grc_db
+      - OPENAI_API_KEY=SK-DUMMYKEYFORSTARTUP
+
 
   # 2. PostgreSQL Database Service
   db:

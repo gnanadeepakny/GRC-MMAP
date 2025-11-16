@@ -13,7 +13,6 @@ class Asset(Base):
     ip_address = Column(String, unique=True, index=True)
     asset_type = Column(String)
     
-    
     findings = relationship("Finding", back_populates="asset")
 
 class Risk(Base):
@@ -22,11 +21,9 @@ class Risk(Base):
     id = Column(Integer, primary_key=True, index=True)
     finding_id = Column(Integer, ForeignKey("findings.id"), unique=True)
     
-    
     inherent_score = Column(Float)
     residual_score = Column(Float, default=None)
     risk_rating = Column(String) # Low/Med/High/Critical
-    
     
     cia_confidentiality = Column(Float)
     cia_integrity = Column(Float)
@@ -38,26 +35,26 @@ class Risk(Base):
 class Framework(Base):
     __tablename__ = "frameworks"
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, unique=True, index=True)      # e.g., 'NIST 800-53', 'ISO 27001'
+    name = Column(String, unique=True, index=True) # FIXED: Removed U+00A0 character
     version = Column(String)
 
     controls = relationship(
         "Control", 
-        secondary="framework_control_link", # Use the table name here
+        secondary="framework_control_link",
         back_populates="frameworks"
     )
 
 class Control(Base):
     __tablename__ = "controls"
     id = Column(Integer, primary_key=True, index=True)
-    control_name = Column(String)                       # e.g., 'Configuration Management'
-    cia_domain = Column(String)                         # e.g., 'Integrity, Availability'
+    control_name = Column(String) 
+    cia_domain = Column(String) 
     # Map back to findings (M:M relationship via finding_control_link)
     findings = relationship("Finding", secondary="finding_control_link", back_populates="controls")
 
     frameworks = relationship(
         "Framework", 
-        secondary="framework_control_link", # Use the table name here
+        secondary="framework_control_link",
         back_populates="controls"
     )
 
@@ -67,7 +64,7 @@ finding_control_link = Table(
     Column('control_id', ForeignKey('controls.id'), primary_key=True)
 )
 
-# --- Framework Control Mapping (M:M Linking Table - NEW) ---
+# --- Framework Control Mapping (M:M Linking Table) ---
 framework_control_link = Table(
     'framework_control_link', Base.metadata,
     Column('framework_id', ForeignKey('frameworks.id'), primary_key=True),
@@ -82,11 +79,11 @@ class Finding(Base):
     id = Column(Integer, primary_key=True, index=True)
     asset_id = Column(Integer, ForeignKey("assets.id"))
     
-
     normalized_title = Column(String, index=True)
     source_type = Column(String) 
     normalized_severity = Column(String) # 'Low', 'Medium', 'High', 'Critical'
     
+    summary = Column(String) # AI SUMMARY COLUMN
     
     raw_evidence = Column(JSONB) 
     ingestion_date = Column(DateTime, default=datetime.utcnow)
@@ -94,4 +91,3 @@ class Finding(Base):
     
     asset = relationship("Asset", back_populates="findings")
     risk = relationship("Risk", back_populates="finding", uselist=False)
-    

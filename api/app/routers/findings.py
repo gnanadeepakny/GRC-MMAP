@@ -10,6 +10,7 @@ from ..crud import crud_findings
 from ..risk_engine.risk_calc import calculate_risk
 from ..core.schemas import FindingCreate, RiskCreate # Required for type hints
 from ..crud import crud_compliance
+from ..risk_engine.ai_utils import generate_audit_summary # <--- NEW IMPORT
 
 router = APIRouter(
     prefix="/findings",
@@ -32,7 +33,7 @@ async def upload_findings_csv(
     df = pd.read_csv(StringIO(content.decode('utf-8')))
     
     saved_findings: List[schemas.Finding] = []
-    final_mapped_controls_preview = [] # Initialized once outside the loop
+    final_mapped_controls_preview = [] 
 
     # 3. Process, Normalize, and PERSIST each row (THE SINGLE, CORRECT LOOP)
     for index, row in df.iterrows():
@@ -53,7 +54,24 @@ async def upload_findings_csv(
         # 5. CRUD: Persist Risk
         crud_findings.create_risk(db, risk_data, finding_id=finding.id)
         
-        # 6. COMPLIANCE MAPPING
+        # --- 6. AI SUMMARY GENERATION (NEW STEP) ---
+        summary_input = {
+            'normalized_title': normalized_data.normalized_title,
+            'normalized_severity': normalized_data.normalized_severity,
+            'ip_address': normalized_data.ip_address,
+        }
+        
+        # Call the AI model
+        ai_summary = generate_audit_summary(summary_input)
+        
+        # Update the finding object in the DB and persist the summary
+        finding.summary = ai_summary
+        db.add(finding)
+        db.commit() # Commit the summary update (this is safe after the main commits)
+        db.refresh(finding)
+        # ------------------------------------------
+        
+        # 7. COMPLIANCE MAPPING
         mapped_controls = crud_compliance.map_finding_to_controls(
             db, finding_id=finding.id, finding_title=finding.normalized_title
         )
