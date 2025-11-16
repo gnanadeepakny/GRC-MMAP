@@ -1,0 +1,81 @@
+Raw_IP_Address,Raw_Vulnerability_Title,Vendor_Severity_Code
+# --- ACCESS CONTROL / CRYPTOGRAPHY (CRITICAL/HIGH) - (20 Entries) ---
+10.1.1.100,Unauthorized Access to Production Database Credentials,CRITICAL
+10.1.1.101,Weak SSH Ciphers and Protocols Detected,CRITICAL
+10.1.1.102,Hardcoded Default Credentials in Application Source Code,HIGH
+10.1.1.103,Excessive Privileges Granted to Service Account (Principle of Least Privilege Violation),HIGH
+10.1.1.104,Broken Access Control: Direct Object Reference (DOR),CRITICAL
+10.1.1.105,Lack of MFA on Administrative Portal (MFA Control Gap),HIGH
+10.1.1.106,Insecure Storage of Customer PII Data Without Encryption,CRITICAL
+10.1.1.107,Unauthorized Access Attempt Logged on HR System,HIGH
+10.1.1.108,Obsolete SSL/TLS Version (TLS 1.0) Active on Web Server,HIGH
+10.1.1.109,Access Control List (ACL) Misconfiguration on Boundary Firewall,CRITICAL
+10.1.1.110,Cleartext Password Transmission over Unencrypted Channel,HIGH
+10.1.1.111,Guest Account Enabled with Default Password (HR Control Issue),MEDIUM
+10.1.1.112,User Account Not Deactivated After Termination (HR Control Gap),HIGH
+10.1.1.113,Privilege Escalation Vulnerability in Authentication Module,CRITICAL
+10.1.1.114,Weak Password Policy Enforcement on Critical Server,HIGH
+10.1.1.115,Unencrypted API Gateway Endpoint (Data Confidentiality Risk),CRITICAL
+10.1.1.116,Lateral Movement Potential Due to Shared Credentials,HIGH
+10.1.1.117,Improper Session Management (Authentication Control),MEDIUM
+10.1.1.118,SQL Injection Vulnerability Leading to Unauthorized Data Access,CRITICAL
+10.1.1.119,Missing Role-Based Access Control (RBAC) Implementation,HIGH
+
+# --- VULNERABILITY MANAGEMENT / PATCH MGMT / CHANGE MGMT (CRITICAL/HIGH/MEDIUM) - (35 Entries) ---
+10.1.1.120,Critical Missing Security Patch KB500 (Vulnerability Management),CRITICAL
+10.1.1.121,Operating System Version End-of-Life (EoL) (Patch Management),HIGH
+10.1.1.122,Outdated Version of Third-Party Library (Dependency Management),HIGH
+10.1.1.123,Configuration Misalignment Detected Post-Deployment (Change Management),CRITICAL
+10.1.1.124,Missing Approval Documentation for Production Change (Change Management Gap),HIGH
+10.1.1.125,Outdated SSH Protocol Version (Configuration Hardening),CRITICAL
+10.1.1.126,Unnecessary Ports Open to the Internet (Configuration Hardening),HIGH
+10.1.1.127,Unmanaged Asset Detected on Production Network (Asset Management),MEDIUM
+10.1.1.128,High-Severity Vulnerability in Browser Engine,HIGH
+10.1.1.129,Missing Non-Critical Patch KB300 (Low Priority Patch Management),MEDIUM
+10.1.1.130,Vulnerability in Web Application Framework (VAPT Focus),CRITICAL
+10.1.1.131,Failure to Rotate Database Encryption Keys (Cryptographic Control),HIGH
+10.1.1.132,Unrestricted Administrative Access via RDP (Configuration Hardening),CRITICAL
+10.1.1.133,Legacy Platform Detected (Asset Management/Patch Management),HIGH
+10.1.1.134,Missing Patch requiring immediate deployment,CRITICAL
+10.1.1.135,Medium Severity Vulnerability in Logging Service,MEDIUM
+10.1.1.136,Outdated Serverless Function Runtime,HIGH
+10.1.1.137,Configuration Drift Detected on Network Device (Change Management),HIGH
+10.1.1.138,Misconfiguration: HTTP Headers Not Set Securely,MEDIUM
+10.1.1.139,Improper Input Validation Vulnerability (VAPT Finding),CRITICAL
+10.1.1.140,Missing Patch requiring immediate deployment on Web Tier,CRITICAL
+10.1.1.141,Unapproved Software Installed on Critical Server (Change Management),HIGH
+10.1.1.142,Missing Patch requiring immediate deployment (Third Occurrence),CRITICAL
+10.1.1.143,Unmanaged or Shadow IT Asset Detected,MEDIUM
+10.1.1.144,Vulnerability in Container Orchestration System,CRITICAL
+10.1.1.145,Open Port (1433) Exposed to External Network,HIGH
+10.1.1.146,Vulnerability in Legacy Authentication System,HIGH
+10.1.1.147,Misconfigured Firewall Rule allowing unauthorized traffic,MEDIUM
+10.1.1.148,Critical Missing Security Patch KB600,CRITICAL
+10.1.1.149,Missing Approval for Database Schema Change (Change Management),HIGH
+10.1.1.150,Outdated Firmware on Router,HIGH
+10.1.1.151,Unnecessary Network Protocols Enabled,MEDIUM
+10.1.1.152,Cross-Site Scripting (XSS) Vulnerability (VAPT Finding),HIGH
+10.1.1.153,Server Disclosure of Sensitive Information,MEDIUM
+10.1.1.154,Critical Missing Security Patch KB700,CRITICAL
+
+# --- BACKUP / BCDR / LOW/INFO FINDINGS - (20 Entries) ---
+10.1.1.155,Backup Policy Not Enforced for Non-Critical File Share (Backup Control),MEDIUM
+10.1.1.156,Lack of Documentation for Disaster Recovery Plan (BCMS Control),HIGH
+10.1.1.157,Failure to Test Restore Procedures in Last 6 Months (Backup Control),CRITICAL
+10.1.1.158,Information Disclosure in Server Banner,LOW
+10.1.1.159,Non-Standard Port Used for Management Interface,LOW
+10.1.1.160,No Recent Backup Snapshot Detected for Development Database (Backup Control),MEDIUM
+10.1.1.161,Missing BCMS Training Records for Key Personnel (HR Control),LOW
+10.1.1.162,Low Severity Vulnerability in Monitoring Agent,LOW
+10.1.1.163,Publicly Accessible Documentation for Internal Process (Data Classification),MEDIUM
+10.1.1.164,Lack of Encryption on Non-Critical Backup Media (Backup Control),HIGH
+10.1.1.165,Expired Certificate on Development Server,LOW
+10.1.1.166,Information Disclosure: Internal IP Exposed in Error Message,MEDIUM
+10.1.1.167,BCDR Runbook Outdated (BCMS Control),HIGH
+10.1.1.168,Low-Severity Denial of Service (DoS) Vulnerability,MEDIUM
+10.1.1.169,Old Log Files Not Rotated (Configuration),LOW
+10.1.1.170,Lack of Offsite Replication for Archive Data (Backup Control),HIGH
+10.1.1.171,Expired User Session Token Found,LOW
+10.1.1.172,Redundant Data Volume Not Encrypted (Backup Control),MEDIUM
+10.1.1.173,Missing BCMS Compliance Audit Record,HIGH
+10.1.1.174,Non-Standard Header Detected,LOW

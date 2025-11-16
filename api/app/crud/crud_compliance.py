@@ -62,15 +62,6 @@ def map_finding_to_controls(db: Session, finding_id: int, finding_title: str):
     if not db_finding:
         return []
     
-    # --- START DIAGNOSTIC ---
-    # Attempt to retrieve ALL controls immediately after the finding is loaded.
-    all_controls = db.query(models.Control).all()
-    if not all_controls:
-        # If this happens, the SEEDER FAILED.
-        print("\n--- DIAGNOSTIC ERROR: CONTROL TABLE IS EMPTY! ---")
-        return ["DIAGNOSTIC FAILED: CONTROL TABLE EMPTY"]
-    # --- END DIAGNOSTIC ---
-    
     # 1. Simple Keyword Mapping Logic:
     # List to hold the NAMES of controls we want to find
     control_names_to_find = []
